@@ -4,13 +4,15 @@ import './App.css';
 const socket = openSocket('http://localhost:5000');
 
 class App extends Component {
-
+  // set state for total viewer count, and individual video viewer count
   state = {
     totalViewerCount: 0,
     videoOneCount: 0,
     videoTwoCount: 0
   };
 
+  // When component mounts, set up socket connection
+  // and ability to communicate count updates from server
   componentDidMount() {
     socket.on('connect', () => {
       console.log('Client is connected.')
@@ -34,8 +36,6 @@ class App extends Component {
       });
     });
   }
-
-  
 
   render() {
     return (

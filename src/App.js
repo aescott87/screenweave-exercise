@@ -6,7 +6,9 @@ const socket = openSocket('http://localhost:5000');
 class App extends Component {
 
   state = {
-    totalViewerCount: 0
+    totalViewerCount: 0,
+    videoOneCount: 0,
+    videoTwoCount: 0
   };
 
   componentDidMount() {
@@ -17,8 +19,20 @@ class App extends Component {
       console.log(count);
       this.setState({
         totalViewerCount: count
-      })
-    })
+      });
+    });
+    socket.on('videoOneCount', (count) => {
+      console.log(count);
+      this.setState({
+        videoOneCount: count
+      });
+    });
+    socket.on('videoTwoCount', (count) => {
+      console.log(count);
+      this.setState({
+        videoTwoCount: count
+      });
+    });
   }
 
   
@@ -30,13 +44,25 @@ class App extends Component {
         <h1>Video Player:</h1>
         <div className="videos">
           <h2>Video 1:</h2>
-          <video id="vid1" width="400" height="320" controls onPlay={() => socket.emit('play', 1)}>
+          <video id="vid1" 
+          width="400" 
+          height="320" 
+          controls 
+          onPlay={() => socket.emit('play', 1)}
+          onPause={() => socket.emit('pause', 1)}>
             <source src="http://reflect-tightytv-vod.cablecast.tv/vod/2-TRMS-Medium-v1.mp4" type="video/mp4" />
           </video>
+          <p>Current Viewers: {this.state.videoOneCount}</p>
           <h2>Video 2:</h2>
-          <video id="vid2" width="400" height="320" controls onPlay={() => socket.emit('play', 2)}>
+          <video id="vid2" 
+          width="400" 
+          height="320" 
+          controls 
+          onPlay={() => socket.emit('play', 2)}
+          onPause={() => socket.emit('pause', 2)}>
             <source src="http://reflect-tightytv-vod.cablecast.tv/vod/3-NAB-2014-Artbeats-30min-High-v4.mp4" type="video/mp4" />
           </video>
+          <p>Current Viewers: {this.state.videoTwoCount}</p>
         </div>
       </div>
     );

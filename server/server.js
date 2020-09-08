@@ -5,6 +5,8 @@ const videoPlayer = require('./routes/videoPlayer.router');
 const PORT = process.env.PORT || 5000;
 const io = require('socket.io')();
 let totalCount = 0;
+let videoOneCount = 0;
+let videoTwoCount = 0;
 
 /** ---------- MIDDLEWARE ---------- **/
 app.use(bodyParser.json()); // needed for post/put requests
@@ -23,13 +25,28 @@ io.listen(PORT);
 console.log('Listening on port ', PORT);
 
 io.on('connection', (client) => {
-    /*client.on('setTotalViewerCount', (integer) => {
-        console.log('client is increasing viewer count by ', integer);
-    });*/
     client.emit('totalViewerCount', totalCount);
-    client.on('play', (id) => {
+    client.on('play', (videoId) => {
         totalCount += 1
         io.sockets.emit('totalViewerCount', totalCount);
+        if(videoId === 1) {
+            videoOneCount += 1
+            io.sockets.emit('videoOneCount', videoOneCount);
+        } else if(videoId === 2) {
+            videoTwoCount += 1
+            io.sockets.emit('videoTwoCount', videoTwoCount);
+        }
+    });
+    client.on('pause', (videoId) => {
+        totalCount -= 1
+        io.sockets.emit('totalViewerCount', totalCount);
+        if(videoId === 1) {
+            videoOneCount -= 1
+            io.sockets.emit('videoOneCount', videoOneCount);
+        } else if(videoId === 2) {
+            videoTwoCount -= 1
+            io.sockets.emit('videoTwoCount', videoTwoCount);
+        }
     });
 });
 
